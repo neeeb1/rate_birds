@@ -1,0 +1,25 @@
+* {
+    margin: 0;
+    border: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    margin: 0px 0px 10px 0px;
+    background-color: lightblue;
+    padding: 15px;
+}
+
+.main>div {
+    background-color: greenyellow;
+    height: 400px;
+}
+
+.footer>div {
+    background-color: orange;
+}
+
+
+.header>h3 {
+    text-align: center;
+}
