@@ -70,12 +70,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: aquamarine;
 }
 
-.content.leaderboard {
+.leaderboard {
     background-color: lightcoral;
-    flex: 30%;
-    max-width: 60%;
+    max-inline-size: 60%;
+    flex: auto;
     margin: 20px;
 }
 
