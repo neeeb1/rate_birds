@@ -2,6 +2,7 @@
     margin: 0;
     border: 0;
     box-sizing: border-box;
+    font-family:'Courier New', Courier, monospace;
 }
 
 .header {
@@ -13,6 +14,7 @@
     padding: 15px;
     z-index: 1;
     text-align: center;
+    font-weight: lighter;
 }
 
 .main {
@@ -47,8 +49,8 @@
 #left-bird>img,
 #right-bird>img {
     border: 1px solid green;
-    max-inline-size: 80%;
-    object-fit: contain;
+    max-inline-size: 90%;
+    object-fit: cover;
     flex: 2 2 auto;
 }
 
@@ -58,7 +60,6 @@
     padding: 10px;
     text-align: center;
     flex: 0;
-    align-items: center;
 }
 
 .content {
@@ -68,16 +69,21 @@
 
 #leaderboard-wrapper {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     background-color: aquamarine;
+}
+
+#leaderboard-wrapper>p {
+    margin: 25px 0;
 }
 
 .leaderboard {
     background-color: lightcoral;
     max-inline-size: 60%;
     flex: auto;
-    margin: 20px;
+    margin: 10px;
 }
 
 .footer {
