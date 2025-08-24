@@ -134,14 +134,12 @@ ol {
 
 .footer {
     text-align: center;
-    margin: 15px 0px 0px 0px;
-    padding: 5px 0px 10px 0px;
+    padding: 16px;
+    margin-top: 16px;
     background-color: #2C592A;
-    position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
-    z-index: 1;
     color: #f9f8f8;
     font-size: 24px;
 }
