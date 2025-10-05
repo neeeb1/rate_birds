@@ -1,16 +1,24 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"os"
+
+	"github.com/joho/godotenv"
+	"github.com/neeeb1/rate_birds/internal/api"
+)
 
 func main() {
-	mux := http.NewServeMux()
-	mux.Handle("/", http.FileServer(http.Dir(".")))
+	godotenv.Load()
 
-	server := http.Server{}
+	apiCfg := api.ApiConfig{}
 
-	server.Handler = mux
-	server.Addr = ":8080"
+	apiCfg.NuthatcherApiKey = os.Getenv("NUTHATCHER_KEY")
 
-	server.ListenAndServe()
+	fmt.Println("apicfg loaded")
+
+	apiCfg.GetNuthatchBirds()
+
+	//server.StartServer()
 
 }
