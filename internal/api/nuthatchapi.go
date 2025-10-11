@@ -8,13 +8,18 @@ import (
 	"net/http"
 
 	"github.com/neeeb1/rate_birds/internal/birds"
+	"github.com/neeeb1/rate_birds/internal/database"
+	"github.com/pressly/goose/v3/database"
 )
 
 type ApiConfig struct {
 	NuthatcherApiKey string
+	DbURL            string
+	DbQueries        *database.Queries
 }
 
 func (cfg *ApiConfig) GetNuthatchBirds() (birds.BirdsJson, error) {
+	fmt.Println("fetching birds from Nuthatch API...")
 	var birdsJson birds.BirdsJson
 
 	url := "https://nuthatch.lastelm.software/v2/birds"
