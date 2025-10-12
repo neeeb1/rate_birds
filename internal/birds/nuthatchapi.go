@@ -17,7 +17,7 @@ type ApiConfig struct {
 }
 
 func (cfg *ApiConfig) GetNuthatchBirds(page, pageSize int) (BirdsJson, error) {
-	//fmt.Printf("fetching birds from Nuthatch API\npage: %d, pagesize: %d\n", page, pageSize)
+	fmt.Printf("fetching birds from Nuthatch API\npage: %d, pagesize: %d\n", page, pageSize)
 	var birdsJson BirdsJson
 
 	url := fmt.Sprintf("https://nuthatch.lastelm.software/v2/birds?page=%d&pageSize=%d", page, pageSize)

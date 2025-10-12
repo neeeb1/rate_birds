@@ -38,14 +38,10 @@ func (cfg *ApiConfig) PopulateBirdDB() error {
 
 	birdsToFetch := intialFetch.Total
 	maxPageSize := 100
-	page := 0
+	page := 1
 
 	for i := 0; i < birdsToFetch; i += maxPageSize {
 		remaining := birdsToFetch - i
-		if remaining >= maxPageSize {
-			page++
-		}
-		fmt.Println(remaining)
 		pageSize := int(math.Min(float64(maxPageSize), float64(remaining)))
 
 		birds, err := cfg.GetNuthatchBirds(page, pageSize)
@@ -67,6 +63,8 @@ func (cfg *ApiConfig) PopulateBirdDB() error {
 				return fmt.Errorf("failed to create database entry for bird: %s", err)
 			}
 		}
+
+		page++
 	}
 
 	return nil
