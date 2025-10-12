@@ -9,5 +9,5 @@ VALUES (
   $3,
   $4,
   $5
-)
+) ON CONFLICT (common_name) DO UPDATE SET updated_at = NOW(), status = $5
 RETURNING *;

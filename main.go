@@ -6,29 +6,33 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/neeeb1/rate_birds/internal/api"
+	_ "github.com/lib/pq"
+	"github.com/neeeb1/rate_birds/internal/birds"
 	"github.com/neeeb1/rate_birds/internal/database"
 )
 
 func main() {
 	godotenv.Load()
 
-	apiCfg := api.ApiConfig{}
+	apiCfg := birds.ApiConfig{}
 
 	apiCfg.NuthatcherApiKey = os.Getenv("NUTHATCH_KEY")
 	apiCfg.DbURL = os.Getenv("DB_URL")
 
 	db, err := sql.Open("postgres", apiCfg.DbURL)
 	if err != nil {
-		fmt.Errorf("failed to open db")
+		fmt.Printf("failed to open db: %s", err)
 		return
 	}
 	apiCfg.DbQueries = database.New(db)
 
 	fmt.Println("apicfg loaded")
 
-	apiCfg.GetNuthatchBirds()
-
+	err = apiCfg.PopulateBirdDB()
+	if err != nil {
+		fmt.Printf("failed to populate birds: %s", err)
+		return
+	}
 	//server.StartServer()
 
 }

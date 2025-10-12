@@ -21,7 +21,7 @@ VALUES (
   $3,
   $4,
   $5
-)
+) ON CONFLICT (common_name) DO UPDATE SET updated_at = NOW(), status = $5
 RETURNING id, created_at, updated_at, common_name, scientific_name, family, "order", status
 `
 

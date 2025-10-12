@@ -1,10 +1,10 @@
 -- +goose Up
 CREATE TABLE birds (
   id UUID PRIMARY KEY,
-  created_at TIMEsTAMP NOT NULL,
+  created_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NOT NULL,
-  common_name TEXT,
-  scientific_name TEXT,
+  common_name TEXT UNIQUE,
+  scientific_name TEXT UNIQUE,
   family TEXT,
   "order" TEXT,
   status TEXT

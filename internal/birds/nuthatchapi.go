@@ -1,4 +1,4 @@
-package api
+package birds
 
 import (
 	"encoding/json"
@@ -7,9 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/neeeb1/rate_birds/internal/birds"
 	"github.com/neeeb1/rate_birds/internal/database"
-	"github.com/pressly/goose/v3/database"
 )
 
 type ApiConfig struct {
@@ -18,11 +16,11 @@ type ApiConfig struct {
 	DbQueries        *database.Queries
 }
 
-func (cfg *ApiConfig) GetNuthatchBirds() (birds.BirdsJson, error) {
-	fmt.Println("fetching birds from Nuthatch API...")
-	var birdsJson birds.BirdsJson
+func (cfg *ApiConfig) GetNuthatchBirds(page, pageSize int) (BirdsJson, error) {
+	//fmt.Printf("fetching birds from Nuthatch API\npage: %d, pagesize: %d\n", page, pageSize)
+	var birdsJson BirdsJson
 
-	url := "https://nuthatch.lastelm.software/v2/birds"
+	url := fmt.Sprintf("https://nuthatch.lastelm.software/v2/birds?page=%d&pageSize=%d", page, pageSize)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -47,13 +45,6 @@ func (cfg *ApiConfig) GetNuthatchBirds() (birds.BirdsJson, error) {
 	}
 
 	json.Unmarshal(data, &birdsJson)
-
-	for _, b := range birdsJson.Birds {
-		fmt.Println(b.Name)
-		fmt.Println(b.SciName)
-		fmt.Println(b.Family)
-		fmt.Println()
-	}
 
 	return birdsJson, nil
 }
