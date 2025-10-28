@@ -1,10 +1,14 @@
 package server
 
-import "net/http"
+import (
+	"net/http"
 
-func StartServer() {
+	"github.com/neeeb1/rate_birds/internal/birds"
+)
+
+func StartServer(cfg birds.ApiConfig) {
 	mux := http.NewServeMux()
-	mux.Handle("/", http.FileServer(http.Dir(".")))
+	birds.RegisterEndpoints(mux, &cfg)
 
 	server := http.Server{}
 

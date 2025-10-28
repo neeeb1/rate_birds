@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rate Birds</title>
+     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -16,7 +17,9 @@
         <div id="bird-wrapper">
             <div class="card" id="left-bird">
                 <img class="card-image" src="assets/American_Barn_Owl,_Bear_River,_Utah_(9637780911).jpg">
-                <div class="card-text">
+                <div class="card-text" 
+                hx-get="/htmx/birds/random" 
+                hx-trigger="click">
                     <p>American Barn Owl</p>
                     <p><em>Tyto furcata</em></p>
                 </div>
@@ -24,7 +27,9 @@
             <div class="card-separator">OR</div>
             <div class=" card" id="right-bird">
                 <img class="card-image" src="assets/Anas_platyrhynchos_male_female_quadrat.jpg">
-                <div class="card-text">
+                <div class="card-text"
+                hx-get="/htmx/birds/random" 
+                hx-trigger="click">
                     <p>Mallard</p>
                     <p><em>Anas platyrhynochos</em></p>
                 </div>

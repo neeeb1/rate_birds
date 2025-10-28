@@ -10,6 +10,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/neeeb1/rate_birds/internal/birds"
 	"github.com/neeeb1/rate_birds/internal/database"
+	"github.com/neeeb1/rate_birds/internal/server"
 )
 
 func main() {
@@ -45,4 +46,6 @@ func main() {
 	for _, b := range rng {
 		fmt.Println(b.CommonName.String)
 	}
+
+	server.StartServer(apiCfg)
 }
