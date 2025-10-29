@@ -69,3 +69,27 @@ func (cfg *ApiConfig) PopulateBirdDB() error {
 
 	return nil
 }
+
+func (cfg *ApiConfig) PopulateRatingsDB() error {
+	birds, err := cfg.DbQueries.GetAllBirds(context.Background())
+	if err != nil {
+		return err
+	}
+
+	for _, b := range birds {
+		params := database.PopulateRatingParams{
+			Matches: sql.NullInt32{Int32: 0, Valid: true},
+			Rating:  sql.NullInt32{Int32: 1000, Valid: true},
+			BirdID:  b.ID,
+		}
+
+		fmt.Printf("adding %s to ratings with default values\n", b.CommonName.String)
+
+		err = cfg.DbQueries.PopulateRating(context.Background(), params)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

@@ -35,7 +35,12 @@ func main() {
 	//	fmt.Printf("failed to populate birds: %s", err)
 	//	return
 	//}
-	//server.StartServer()
+
+	err = apiCfg.PopulateRatingsDB()
+	if err != nil {
+		fmt.Printf("failed to populate ratings: %s", err)
+		return
+	}
 
 	rng, err := apiCfg.DbQueries.GetRandomBird(context.Background(), 10)
 	if err != nil {

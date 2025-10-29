@@ -16,3 +16,6 @@ RETURNING *;
 SELECT * from birds
 ORDER by RANDOM()
 LIMIT $1;
+
+-- name: GetAllBirds :many
+SELECT * from birds;

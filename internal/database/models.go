@@ -21,3 +21,12 @@ type Bird struct {
 	Order          sql.NullString
 	Status         sql.NullString
 }
+
+type Rating struct {
+	ID        uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Matches   sql.NullInt32
+	Rating    sql.NullInt32
+	BirdID    uuid.UUID
+}

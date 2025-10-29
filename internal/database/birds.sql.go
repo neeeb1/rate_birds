@@ -55,6 +55,42 @@ func (q *Queries) CreateBird(ctx context.Context, arg CreateBirdParams) (Bird, e
 	return i, err
 }
 
+const getAllBirds = `-- name: GetAllBirds :many
+SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status from birds
+`
+
+func (q *Queries) GetAllBirds(ctx context.Context) ([]Bird, error) {
+	rows, err := q.db.QueryContext(ctx, getAllBirds)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Bird
+	for rows.Next() {
+		var i Bird
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.CommonName,
+			&i.ScientificName,
+			&i.Family,
+			&i.Order,
+			&i.Status,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getRandomBird = `-- name: GetRandomBird :many
 SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status from birds
 ORDER by RANDOM()
