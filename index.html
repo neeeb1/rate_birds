@@ -15,23 +15,33 @@
     </div>
     <div class="main">
         <div id="bird-wrapper">
-            <div class="card" id="left-bird">
+·           <div class="card" id="left-bird">
                 <img class="card-image" src="assets/American_Barn_Owl,_Bear_River,_Utah_(9637780911).jpg">
-                <div class="card-text" 
-                hx-get="/htmx/birds/random" 
-                hx-trigger="click">
-                    <p>American Barn Owl</p>
-                    <p><em>Tyto furcata</em></p>
+                <div class="card-text">
+                    <p>default</p>
+                    <p><em>defaulticus maximus</em></p>
+                    <Button hx-get="/htmx/birds/random"
+                        hx-trigger="click"
+                        hx-target="#left-bird"
+                        hx-swap="outerHTML"
+                        hx-vals='{"side": "left"}'>
+                        This one!
+                    </Button>
                 </div>
             </div>
             <div class="card-separator">OR</div>
             <div class=" card" id="right-bird">
                 <img class="card-image" src="assets/Anas_platyrhynchos_male_female_quadrat.jpg">
-                <div class="card-text"
-                hx-get="/htmx/birds/random" 
-                hx-trigger="click">
-                    <p>Mallard</p>
-                    <p><em>Anas platyrhynochos</em></p>
+                <div class="card-text">
+                    <p>default</p>
+                    <p><em>defaulticus maximus</em></p>
+                    <Button hx-get="/htmx/birds/random"
+                        hx-trigger="click"
+                        hx-target="#right-bird"
+                        hx-swap="outerHTML"
+                        hx-vals='{"side": "right"}'>
+                        This one!
+                    </Button>
                 </div>
             </div>
         </div>
