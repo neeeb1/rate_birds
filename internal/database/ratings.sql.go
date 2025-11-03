@@ -12,6 +12,25 @@ import (
 	"github.com/google/uuid"
 )
 
+const getRatingByBirdID = `-- name: GetRatingByBirdID :one
+SELECT id, created_at, updated_at, matches, rating, bird_id from ratings
+WHERE bird_id = $1
+`
+
+func (q *Queries) GetRatingByBirdID(ctx context.Context, birdID uuid.UUID) (Rating, error) {
+	row := q.db.QueryRowContext(ctx, getRatingByBirdID, birdID)
+	var i Rating
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Matches,
+		&i.Rating,
+		&i.BirdID,
+	)
+	return i, err
+}
+
 const populateRating = `-- name: PopulateRating :exec
 INSERT INTO ratings (
     id,
@@ -39,4 +58,31 @@ type PopulateRatingParams struct {
 func (q *Queries) PopulateRating(ctx context.Context, arg PopulateRatingParams) error {
 	_, err := q.db.ExecContext(ctx, populateRating, arg.Matches, arg.Rating, arg.BirdID)
 	return err
+}
+
+const updateRatingByBirdID = `-- name: UpdateRatingByBirdID :one
+UPDATE ratings
+set rating = $1,
+updated_at = NOW()
+WHERE bird_id = $2
+RETURNING id, created_at, updated_at, matches, rating, bird_id
+`
+
+type UpdateRatingByBirdIDParams struct {
+	Rating sql.NullInt32
+	BirdID uuid.UUID
+}
+
+func (q *Queries) UpdateRatingByBirdID(ctx context.Context, arg UpdateRatingByBirdIDParams) (Rating, error) {
+	row := q.db.QueryRowContext(ctx, updateRatingByBirdID, arg.Rating, arg.BirdID)
+	var i Rating
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Matches,
+		&i.Rating,
+		&i.BirdID,
+	)
+	return i, err
 }

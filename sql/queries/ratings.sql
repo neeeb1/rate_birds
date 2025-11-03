@@ -14,3 +14,14 @@ INSERT INTO ratings (
     $2,
     $3
 ) ON CONFLICT (bird_id) DO NOTHING;
+
+-- name: GetRatingByBirdID :one
+SELECT * from ratings
+WHERE bird_id = $1;
+
+-- name: UpdateRatingByBirdID :one
+UPDATE ratings
+set rating = $1,
+updated_at = NOW()
+WHERE bird_id = $2
+RETURNING *;

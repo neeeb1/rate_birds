@@ -83,7 +83,7 @@ func (cfg *ApiConfig) PopulateRatingsDB() error {
 			BirdID:  b.ID,
 		}
 
-		fmt.Printf("adding %s to ratings with default values\n", b.CommonName.String)
+		//fmt.Printf("adding %s to ratings with default values\n", b.CommonName.String)
 
 		err = cfg.DbQueries.PopulateRating(context.Background(), params)
 		if err != nil {
