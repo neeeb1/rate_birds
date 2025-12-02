@@ -19,3 +19,7 @@ LIMIT $1;
 
 -- name: GetAllBirds :many
 SELECT * from birds;
+
+-- name: GetBirdByID :one
+SELECT * from birds
+WHERE id = $1;

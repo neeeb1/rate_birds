@@ -8,6 +8,8 @@ package database
 import (
 	"context"
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
 const createBird = `-- name: CreateBird :one
@@ -89,6 +91,27 @@ func (q *Queries) GetAllBirds(ctx context.Context) ([]Bird, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const getBirdByID = `-- name: GetBirdByID :one
+SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status from birds
+WHERE id = $1
+`
+
+func (q *Queries) GetBirdByID(ctx context.Context, id uuid.UUID) (Bird, error) {
+	row := q.db.QueryRowContext(ctx, getBirdByID, id)
+	var i Bird
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.CommonName,
+		&i.ScientificName,
+		&i.Family,
+		&i.Order,
+		&i.Status,
+	)
+	return i, err
 }
 
 const getRandomBird = `-- name: GetRandomBird :many
