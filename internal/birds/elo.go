@@ -14,7 +14,7 @@ const (
 	d = 400
 )
 
-func (cfg *ApiConfig) scoreMatch(winner, loser database.Bird) error {
+func (cfg *ApiConfig) ScoreMatch(winner, loser database.Bird) error {
 	winnerDb, err := cfg.DbQueries.GetRatingByBirdID(context.Background(), winner.ID)
 	if err != nil {
 		return err
