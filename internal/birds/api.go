@@ -10,11 +10,10 @@ import (
 
 func RegisterEndpoints(mux *http.ServeMux, cfg *ApiConfig) {
 	mux.Handle("/", http.FileServer(http.Dir(".")))
-	mux.HandleFunc("GET /htmx/birds/random", cfg.handleGetRandomBird)
-	mux.HandleFunc("POST /api/ratings/score_match", cfg.handleScoreMatch)
+	mux.HandleFunc("GET /api/scorematch/", cfg.handleScoreMatch)
 }
 
-func (cfg *ApiConfig) handleGetRandomBird(w http.ResponseWriter, r *http.Request) {
+func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("call to htmx handler")
 	rng_bird, err := cfg.DbQueries.GetRandomBird(r.Context(), 2)
 	if err != nil {
@@ -48,8 +47,10 @@ func (cfg *ApiConfig) handleGetRandomBird(w http.ResponseWriter, r *http.Request
 	switch winner {
 	case "left":
 		fmt.Printf("Winner: %s, Loser: %s\n", leftBird.CommonName.String, rightBird.CommonName.String)
+		cfg.ScoreMatch(leftBird, rightBird)
 	case "right":
 		fmt.Printf("Winner: %s, Loser: %s\n", rightBird.CommonName.String, leftBird.CommonName.String)
+		cfg.ScoreMatch(rightBird, leftBird)
 	}
 
 	newLeftBird := rng_bird[0]
@@ -63,7 +64,7 @@ func (cfg *ApiConfig) handleGetRandomBird(w http.ResponseWriter, r *http.Request
                 <div class="card-text">
                     <p>%s</p>
                     <p><em>%s</em></p>
-                    <Button hx-get="/htmx/birds/random"
+                    <Button hx-get="/api/scorematch/"
                         hx-trigger="click"
                         hx-target="#bird-wrapper"
                         hx-swap="outerHTML"
@@ -78,7 +79,7 @@ func (cfg *ApiConfig) handleGetRandomBird(w http.ResponseWriter, r *http.Request
                 <div class="card-text">
                     <p>%s</p>
                     <p><em>d%s</em></p>
-                    <Button hx-get="/htmx/birds/random"
+                    <Button hx-get="/api/scorematch/"
                         hx-trigger="click"
                         hx-target="#bird-wrapper"
                         hx-swap="outerHTML"
@@ -99,8 +100,4 @@ func (cfg *ApiConfig) handleGetRandomBird(w http.ResponseWriter, r *http.Request
 	)
 
 	w.Write([]byte(payload))
-}
-
-func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
-
 }

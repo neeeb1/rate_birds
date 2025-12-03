@@ -3,6 +3,7 @@ package birds
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"math"
 
 	"github.com/neeeb1/rate_birds/internal/database"
@@ -51,6 +52,8 @@ func (cfg *ApiConfig) ScoreMatch(winner, loser database.Bird) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("Updated ratings for %s and %s\n", winner.CommonName.String, loser.CommonName.String)
+	fmt.Printf("'%s': %d || '%s': %d", winner.CommonName.String, winnerNewRating, loser.CommonName.String, loserNewRating)
 	return nil
 }
 
