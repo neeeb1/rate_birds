@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"os"
@@ -40,16 +39,6 @@ func main() {
 	if err != nil {
 		fmt.Printf("failed to populate ratings: %s", err)
 		return
-	}
-
-	rng, err := apiCfg.DbQueries.GetRandomBird(context.Background(), 10)
-	if err != nil {
-		fmt.Printf("failed to get random bird: %v", err)
-		return
-	}
-
-	for _, b := range rng {
-		fmt.Println(b.CommonName.String)
 	}
 
 	server.StartServer(apiCfg)
