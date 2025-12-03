@@ -22,9 +22,9 @@
                     <p><em>defaulticus maximus</em></p>
                     <Button hx-get="/htmx/birds/random"
                         hx-trigger="click"
-                        hx-target="#left-bird"
+                        hx-target="#bird-wrapper"
                         hx-swap="outerHTML"
-                        hx-vals='{"side": "left"}'>
+                        hx-vals='{"leftBirdID": "c44bcc1d-de5a-4872-b6e5-b5fbf3eaadae", "rightBirdID": "543e76d4-15cb-407b-abdc-874f96059bce"}'>
                         This one!
                     </Button>
                 </div>
@@ -37,9 +37,9 @@
                     <p><em>defaulticus maximus</em></p>
                     <Button hx-get="/htmx/birds/random"
                         hx-trigger="click"
-                        hx-target="#right-bird"
+                        hx-target="#bird-wrapper"
                         hx-swap="outerHTML"
-                        hx-vals='{"side": "right"}'>
+                        hx-vals='{"leftBirdID": "c44bcc1d-de5a-4872-b6e5-b5fbf3eaadae", "rightBirdID": "543e76d4-15cb-407b-abdc-874f96059bce"}'>
                         This one!
                     </Button>
                 </div>
