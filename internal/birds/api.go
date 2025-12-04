@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/google/uuid"
 )
@@ -11,10 +13,11 @@ import (
 func RegisterEndpoints(mux *http.ServeMux, cfg *ApiConfig) {
 	mux.Handle("/", http.FileServer(http.Dir(".")))
 	mux.HandleFunc("GET /api/scorematch/", cfg.handleScoreMatch)
+	mux.HandleFunc("GET /api/leaderboard/", cfg.handleLoadLeaderboard)
 }
 
 func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("call to htmx handler")
+	fmt.Println("call to score match handler")
 	rng_bird, err := cfg.DbQueries.GetRandomBird(r.Context(), 2)
 	if err != nil {
 		fmt.Println(err)
@@ -98,6 +101,54 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 		newLeftBird.ID.String(),
 		newRightBird.ID.String(),
 	)
+
+	w.Write([]byte(payload))
+}
+
+func (cfg *ApiConfig) handleLoadLeaderboard(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("call to load leaderboard handler")
+
+	listLength, err := strconv.Atoi(r.URL.Query().Get("listLength"))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	topBirds, err := cfg.DbQueries.GetTopRatings(context.Background(), int32(listLength))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	w.Header().Add("Content-Type", "text/html; charset=utf-8")
+
+	var builder strings.Builder
+	builder.WriteString("<table>\n")
+
+	for i, r := range topBirds {
+		bird, err := cfg.DbQueries.GetBirdByID(context.Background(), r.BirdID)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		row := fmt.Sprintf(
+			`<tr>
+				<td>%d.</td>
+				<td>%s</td>
+				<td>%d</td>
+			</tr>
+			`,
+			i+1,
+			bird.CommonName.String,
+			r.Rating.Int32,
+		)
+		builder.WriteString(row)
+	}
+
+	builder.WriteString("</table>\n")
+
+	payload := builder.String()
 
 	w.Write([]byte(payload))
 }

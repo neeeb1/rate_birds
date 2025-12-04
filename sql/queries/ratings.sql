@@ -25,3 +25,8 @@ set rating = $1,
 updated_at = NOW()
 WHERE bird_id = $2
 RETURNING *;
+
+-- name: GetTopRatings :many
+SELECT * from ratings
+ORDER BY rating DESC
+LIMIT $1;

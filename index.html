@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rate Birds</title>
-     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -21,7 +21,7 @@
                     <p>default</p>
                     <p><em>defaulticus maximus</em></p>
                     <Button hx-get="/api/scorematch/"
-                        hx-trigger="click"
+                        hx-trigger="click, load"
                         hx-target="#bird-wrapper"
                         hx-swap="outerHTML"
                         hx-vals='{"leftBirdID": "c44bcc1d-de5a-4872-b6e5-b5fbf3eaadae", "rightBirdID": "543e76d4-15cb-407b-abdc-874f96059bce"}'>
@@ -50,38 +50,33 @@
             <div class="leaderboard-header">
                 <p>Visit the <a href="leaderboard.html">leaderboard</a></p>
             </div>
-            <div class="leaderboard-list">
-                <ol>
-                    <li>
-                        <p>American Robin</p>
-                    </li>
-                    <li>
-                        <p>Mallard</p>
-                    </li>
-                    <li>
-                        <p>Cerulean Warbler</p>
-                    </li>
-                    <li>
-                        <p>Song Sparrow</p>
-                    </li>
-                    <li>
-                        <p>Brown-Headed Nuthatch</p>
-                    </li>
-                    <li>
-                        <p>Northern Cardinal</p>
-                    </li>
-                    <li>
-                        <p>Bald Eagle</p>
-                    </li>
-                    <li>
-                        <p>Great Blue Heron</p>
-                    </li>
-                    <li>
-                        <p>Eastern Bluebird</p>
-                    </li>
-                    <li>
-                        <p>Red-tailed Hawk</p>
-                    </li>
+            <div class="leaderboard-list"
+                hx-trigger="load"
+                hx-get="/api/leaderboard"
+                hx-swap="outerHTML"
+                hx-vals='{"listLength": "5"}'>
+                <table>
+                    <tr>
+                        <th>Ranking</th>
+                        <th>Common Name</th>
+                        <th>ELO Score</th>
+                    </tr>
+                    <tr class="leaderboard-first">
+                        <td>1.</td>
+                        <td>defaulticus maximus</td>
+                        <td>999999999</td>
+                    </tr>
+                    <tr class="leaderboard-second">
+                        <td>2.</td>
+                        <td>defaulticus medius</td>
+                        <td>999999998</td>
+                    </tr>
+                    <tr class="leaderboard-third">
+                        <td>3.</td>
+                        <td>defaulticus minimus</td>
+                        <td>999999997</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

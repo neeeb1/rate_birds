@@ -41,5 +41,17 @@ func main() {
 		return
 	}
 
+	/* 	fmt.Println("Getting top 10 birds...")
+	   	topBirds, err := apiCfg.DbQueries.GetTopRatings(context.Background(), 10)
+	   	if err != nil {
+	   		fmt.Println("Unable to get top birds, exiting...")
+	   		return
+	   	}
+
+	   	for i, b := range topBirds {
+	   		birdDb, _ := apiCfg.DbQueries.GetBirdByID(context.Background(), b.BirdID)
+	   		fmt.Printf("%d. %s (%d)\n", i+1, birdDb.CommonName.String, b.Rating.Int32)
+	   	} */
+
 	server.StartServer(apiCfg)
 }

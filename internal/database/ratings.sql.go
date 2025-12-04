@@ -31,6 +31,42 @@ func (q *Queries) GetRatingByBirdID(ctx context.Context, birdID uuid.UUID) (Rati
 	return i, err
 }
 
+const getTopRatings = `-- name: GetTopRatings :many
+SELECT id, created_at, updated_at, matches, rating, bird_id from ratings
+ORDER BY rating DESC
+LIMIT $1
+`
+
+func (q *Queries) GetTopRatings(ctx context.Context, limit int32) ([]Rating, error) {
+	rows, err := q.db.QueryContext(ctx, getTopRatings, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Rating
+	for rows.Next() {
+		var i Rating
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Matches,
+			&i.Rating,
+			&i.BirdID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const populateRating = `-- name: PopulateRating :exec
 INSERT INTO ratings (
     id,

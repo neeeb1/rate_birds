@@ -39,7 +39,8 @@ func (cfg *ApiConfig) ScoreMatch(winner, loser database.Bird) error {
 		Rating: sql.NullInt32{Int32: winnerNewRating, Valid: true},
 		BirdID: winnerDb.BirdID,
 	}
-	_, err = cfg.DbQueries.UpdateRatingByBirdID(context.Background(), winParams)
+	rating, err := cfg.DbQueries.UpdateRatingByBirdID(context.Background(), winParams)
+	fmt.Println(rating)
 	if err != nil {
 		return err
 	}
@@ -48,12 +49,15 @@ func (cfg *ApiConfig) ScoreMatch(winner, loser database.Bird) error {
 		Rating: sql.NullInt32{Int32: loserNewRating, Valid: true},
 		BirdID: winnerDb.BirdID,
 	}
-	_, err = cfg.DbQueries.UpdateRatingByBirdID(context.Background(), loseParams)
+	rating, err = cfg.DbQueries.UpdateRatingByBirdID(context.Background(), loseParams)
+	fmt.Println(rating)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
+
 	fmt.Printf("Updated ratings for %s and %s\n", winner.CommonName.String, loser.CommonName.String)
-	fmt.Printf("'%s': %d || '%s': %d", winner.CommonName.String, winnerNewRating, loser.CommonName.String, loserNewRating)
+	fmt.Printf("'%s': %d || '%s': %d\n", winner.CommonName.String, winnerNewRating, loser.CommonName.String, loserNewRating)
 	return nil
 }
 
