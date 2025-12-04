@@ -15,6 +15,13 @@ INSERT INTO ratings (
     $3
 ) ON CONFLICT (bird_id) DO NOTHING;
 
+-- name: Danger_ResetRatingsDB :exec
+UPDATE ratings
+set rating = 1000,
+updated_at = NOW(),
+created_at = NOW(),
+matches = 0;
+
 -- name: GetRatingByBirdID :one
 SELECT * from ratings
 WHERE bird_id = $1;
@@ -22,7 +29,8 @@ WHERE bird_id = $1;
 -- name: UpdateRatingByBirdID :one
 UPDATE ratings
 set rating = $1,
-updated_at = NOW()
+updated_at = NOW(),
+matches = matches + 1
 WHERE bird_id = $2
 RETURNING *;
 

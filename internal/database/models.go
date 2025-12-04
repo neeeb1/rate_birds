@@ -23,10 +23,11 @@ type Bird struct {
 }
 
 type Rating struct {
-	ID        uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Matches   sql.NullInt32
-	Rating    sql.NullInt32
-	BirdID    uuid.UUID
+	ID         uuid.UUID
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	Matches    sql.NullInt32
+	Rating     sql.NullInt32
+	BirdID     uuid.UUID
+	CommonName sql.NullString
 }

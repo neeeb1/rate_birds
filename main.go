@@ -35,12 +35,6 @@ func main() {
 	//	return
 	//}
 
-	err = apiCfg.PopulateRatingsDB()
-	if err != nil {
-		fmt.Printf("failed to populate ratings: %s", err)
-		return
-	}
-
 	/* 	fmt.Println("Getting top 10 birds...")
 	   	topBirds, err := apiCfg.DbQueries.GetTopRatings(context.Background(), 10)
 	   	if err != nil {

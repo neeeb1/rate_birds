@@ -47,7 +47,7 @@ func (cfg *ApiConfig) ScoreMatch(winner, loser database.Bird) error {
 
 	loseParams := database.UpdateRatingByBirdIDParams{
 		Rating: sql.NullInt32{Int32: loserNewRating, Valid: true},
-		BirdID: winnerDb.BirdID,
+		BirdID: loserDb.BirdID,
 	}
 	rating, err = cfg.DbQueries.UpdateRatingByBirdID(context.Background(), loseParams)
 	fmt.Println(rating)

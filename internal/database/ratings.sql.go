@@ -12,8 +12,21 @@ import (
 	"github.com/google/uuid"
 )
 
+const danger_ResetRatingsDB = `-- name: Danger_ResetRatingsDB :exec
+UPDATE ratings
+set rating = 1000,
+updated_at = NOW(),
+created_at = NOW(),
+matches = 0
+`
+
+func (q *Queries) Danger_ResetRatingsDB(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, danger_ResetRatingsDB)
+	return err
+}
+
 const getRatingByBirdID = `-- name: GetRatingByBirdID :one
-SELECT id, created_at, updated_at, matches, rating, bird_id from ratings
+SELECT id, created_at, updated_at, matches, rating, bird_id, common_name from ratings
 WHERE bird_id = $1
 `
 
@@ -27,12 +40,13 @@ func (q *Queries) GetRatingByBirdID(ctx context.Context, birdID uuid.UUID) (Rati
 		&i.Matches,
 		&i.Rating,
 		&i.BirdID,
+		&i.CommonName,
 	)
 	return i, err
 }
 
 const getTopRatings = `-- name: GetTopRatings :many
-SELECT id, created_at, updated_at, matches, rating, bird_id from ratings
+SELECT id, created_at, updated_at, matches, rating, bird_id, common_name from ratings
 ORDER BY rating DESC
 LIMIT $1
 `
@@ -53,6 +67,7 @@ func (q *Queries) GetTopRatings(ctx context.Context, limit int32) ([]Rating, err
 			&i.Matches,
 			&i.Rating,
 			&i.BirdID,
+			&i.CommonName,
 		); err != nil {
 			return nil, err
 		}
@@ -99,9 +114,10 @@ func (q *Queries) PopulateRating(ctx context.Context, arg PopulateRatingParams) 
 const updateRatingByBirdID = `-- name: UpdateRatingByBirdID :one
 UPDATE ratings
 set rating = $1,
-updated_at = NOW()
+updated_at = NOW(),
+matches = matches + 1
 WHERE bird_id = $2
-RETURNING id, created_at, updated_at, matches, rating, bird_id
+RETURNING id, created_at, updated_at, matches, rating, bird_id, common_name
 `
 
 type UpdateRatingByBirdIDParams struct {
@@ -119,6 +135,7 @@ func (q *Queries) UpdateRatingByBirdID(ctx context.Context, arg UpdateRatingByBi
 		&i.Matches,
 		&i.Rating,
 		&i.BirdID,
+		&i.CommonName,
 	)
 	return i, err
 }
