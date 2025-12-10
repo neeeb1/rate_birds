@@ -61,13 +61,14 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "text/html; charset=utf-8")
 	payload := fmt.Sprintf(
-		`<div id="bird-wrapper">
-           <div class="card" id="left-bird">
-                <img class="card-image" src="assets/American_Barn_Owl,_Bear_River,_Utah_(9637780911).jpg">
-                <div class="card-text">
+		`<div id="bird-wrapper" class="w-screen h-3/4 grid grid-flow-col justify-items-center">
+           <div class="shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="left-bird">
+                <img class="card-image object-cover aspect-square object-contain" src="assets/American_Barn_Owl,_Bear_River,_Utah_(9637780911).jpg">
+                <div class="flex flex-col text-center">
                     <p>%s</p>
                     <p><em>%s</em></p>
-                    <Button hx-get="/api/scorematch/"
+                    <Button class="rounded-md outline border-green-800 text-green-800 hover:border-transparent hover:bg-green-800 hover:text-white active:bg-green-900"
+						hx-get="/api/scorematch/"
                         hx-trigger="click"
                         hx-target="#bird-wrapper"
                         hx-swap="outerHTML"
@@ -75,14 +76,15 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
                         This one!
                     </Button>
                 </div>
-            </div>
-            <div class="card-separator">OR</div>
-            <div class="card" id="right-bird">
-                <img class="card-image" src="assets/Anas_platyrhynchos_male_female_quadrat.jpg">
-                <div class="card-text">
+			</div>
+            <div class="card-separator inline-block self-center">OR</div>
+            <div class="shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="right-bird">
+                <img  class="card-image object-cover aspect-square box-content" src="assets/Anas_platyrhynchos_male_female_quadrat.jpg">
+                <div class="flex flex-col text-center">
                     <p>%s</p>
-                    <p><em>d%s</em></p>
-                    <Button hx-get="/api/scorematch/"
+                    <p><em>%s</em></p>
+                    <Button class="rounded-md outline border-green-800 text-green-800 hover:border-transparent hover:bg-green-800 hover:text-white active:bg-green-900"
+					hx-get="/api/scorematch/"
                         hx-trigger="click"
                         hx-target="#bird-wrapper"
                         hx-swap="outerHTML"

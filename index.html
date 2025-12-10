@@ -6,55 +6,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rate Birds</title>
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"
+        integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz"
+        crossorigin="anonymous"></script>
 </head>
 
-<body >
-    <header class="header position-top sticky m-0 p-0 max-w-screen text-center bg-green-700">
+<body>
+    <header class="header relative top-0 m-0 p-0 max-w-screen text-center bg-green-700">
         <h3>Rate<em>(the)</em>Birds</h3>
     </header>
-      <div class="flex flex-col p-4 items-center justify-center w-screen bg-amber-200">
-        <div id="bird-wrapper" class="w-screen h-full m-8 grid grid-flow-col justify-items-center">
-           <div class="p-6 flex flex-col align-items-center bg-zinc-300" id="left-bird">
-                <img class="card-image object-contain aspect-square object-contain" src="assets/American_Barn_Owl,_Bear_River,_Utah_(9637780911).jpg">
-                <div class="card-text">
+    <div class="flex flex-col p-2 items-center justify-center min-h-svh h-auto w-screen bg-amber-200">
+        <div id="bird-wrapper" class="w-screen h-3/4 grid grid-flow-col justify-items-center">
+            <div class="shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="left-bird">
+                <img class="card-image object-cover aspect-square object-contain"
+                    src="assets/American_Barn_Owl,_Bear_River,_Utah_(9637780911).jpg">
+                <div class="flex flex-col text-center">
                     <p>default</p>
                     <p><em>defaulticus maximus</em></p>
-                    <Button class="rounded-md outline border-green-800 text-green-800 hover:border-transparent hover:bg-green-800 hover:text-white active:bg-green-900" 
-                        hx-get="/api/scorematch/"
-                        hx-trigger="click, load"
-                        hx-target="#bird-wrapper"
-                        hx-swap="outerHTML"
-                        hx-vals='{"leftBirdID": "c44bcc1d-de5a-4872-b6e5-b5fbf3eaadae", "rightBirdID": "543e76d4-15cb-407b-abdc-874f96059bce"}'>
+                    <Button
+                        class="rounded-md outline border-green-800 text-green-800 hover:border-transparent hover:bg-green-800 hover:text-white active:bg-green-900"
+                        hx-get="/api/scorematch/" hx-trigger="click, load" hx-target="#bird-wrapper" hx-swap="outerHTML"
+                        hx-vals='{"winner": "left", "leftBirdID": "c44bcc1d-de5a-4872-b6e5-b5fbf3eaadae", "rightBirdID": "543e76d4-15cb-407b-abdc-874f96059bce"}'>
                         This one!
                     </Button>
                 </div>
             </div>
             <div class="card-separator inline-block self-center">OR</div>
-            <div class="p-8 flex flex-col align-items-center bg-zinc-300" id="right-bird">
-                <img  class="card-image object-contain aspect-square box-content" src="assets/Anas_platyrhynchos_male_female_quadrat.jpg">
-                <div class="card-text">
+            <div class="shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="right-bird">
+                <img class="card-image object-cover aspect-square box-content"
+                    src="assets/Anas_platyrhynchos_male_female_quadrat.jpg">
+                <div class="flex flex-col text-center">
                     <p>default</p>
                     <p><em>defaulticus maximus</em></p>
-                    <Button class="rounded-md outline border-green-800 text-green-800 hover:border-transparent hover:bg-green-800 hover:text-white active:bg-green-900" 
-                        hx-get="/api/scorematch/"
-                        hx-trigger="click"
-                        hx-target="#bird-wrapper"
-                        hx-swap="outerHTML"
-                        hx-vals='{"leftBirdID": "c44bcc1d-de5a-4872-b6e5-b5fbf3eaadae", "rightBirdID": "543e76d4-15cb-407b-abdc-874f96059bce"}'>
+                    <Button
+                        class="rounded-md outline border-green-800 text-green-800 hover:border-transparent hover:bg-green-800 hover:text-white active:bg-green-900"
+                        hx-get="/api/scorematch/" hx-trigger="click" hx-target="#bird-wrapper" hx-swap="outerHTML"
+                        hx-vals='{"winner": "right", "leftBirdID": "c44bcc1d-de5a-4872-b6e5-b5fbf3eaadae", "rightBirdID": "543e76d4-15cb-407b-abdc-874f96059bce"}'>
                         This one!
                     </Button>
                 </div>
             </div>
         </div>
-        <div id="leaderboard-wrapper" class="flex flex-col rounded-xl outline outline-green-800 items-center w-md bg-green-600">
+        <div id="leaderboard-wrapper"
+            class="flex flex-col mt-8 static shadow-md rounded-xl outline outline-green-800 items-center w-md bg-green-600">
             <div class="leaderboard-header">
-                <p>Visit the <a href="leaderboard.html" class="text-amber-300 hover:text-amber-100 underline">leaderboard</a></p>
+                <p>Visit the <a href="leaderboard.html"
+                        class="text-amber-300 hover:text-amber-100 underline">leaderboard</a></p>
             </div>
-            <div class="leaderboard-list p-2"
-                hx-trigger="load"
-                hx-get="/api/leaderboard"
-                hx-swap="outerHTML"
+            <div class="leaderboard-list p-2" hx-trigger="load" hx-get="/api/leaderboard" hx-swap="outerHTML"
                 hx-vals='{"listLength": "5"}'>
                 <table>
                     <tr>
@@ -82,7 +81,7 @@
         </div>
     </div>
     </div>
-    <div class="footer m-0 p-0 max-w-screen text-center bg-green-700">
+    <div class="footer relative inset-x-0 bottom-0 m-0 p-0 w-screen text-center bg-green-700">
         <p>Copyright Neeeb | 2025</p>
     </div>
 </body>
