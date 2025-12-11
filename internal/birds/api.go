@@ -21,29 +21,24 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 	rng_bird, err := cfg.DbQueries.GetRandomBird(r.Context(), 2)
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
 
 	leftBirdID, err := uuid.Parse(r.URL.Query().Get("leftBirdID"))
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
 	leftBird, err := cfg.DbQueries.GetBirdByID(context.Background(), leftBirdID)
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
 
 	rightBirdID, err := uuid.Parse(r.URL.Query().Get("rightBirdID"))
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
 	rightBird, err := cfg.DbQueries.GetBirdByID(context.Background(), rightBirdID)
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
 
 	winner := r.URL.Query().Get("winner")

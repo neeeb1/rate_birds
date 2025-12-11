@@ -22,11 +22,11 @@
                     src="assets/American_Barn_Owl,_Bear_River,_Utah_(9637780911).jpg">
                 <div class="flex flex-col text-center">
                     <p>default</p>
-                    <p><em>defaulticus maximus</em></p>
+                    <p class="italic">defaulticus maximus</p>
                     <Button
                         class="rounded-md outline border-green-800 text-green-800 hover:border-transparent hover:bg-green-800 hover:text-white active:bg-green-900"
                         hx-get="/api/scorematch/" hx-trigger="click, load" hx-target="#bird-wrapper" hx-swap="outerHTML"
-                        hx-vals='{"winner": "left", "leftBirdID": "c44bcc1d-de5a-4872-b6e5-b5fbf3eaadae", "rightBirdID": "543e76d4-15cb-407b-abdc-874f96059bce"}'>
+                        hx-vals='{"winner": "left", "leftBirdID": "", "rightBirdID": ""}'>
                         This one!
                     </Button>
                 </div>
@@ -37,11 +37,11 @@
                     src="assets/Anas_platyrhynchos_male_female_quadrat.jpg">
                 <div class="flex flex-col text-center">
                     <p>default</p>
-                    <p><em>defaulticus maximus</em></p>
+                    <p class="italic">defaulticus maximus</p>
                     <Button
                         class="rounded-md outline border-green-800 text-green-800 hover:border-transparent hover:bg-green-800 hover:text-white active:bg-green-900"
                         hx-get="/api/scorematch/" hx-trigger="click" hx-target="#bird-wrapper" hx-swap="outerHTML"
-                        hx-vals='{"winner": "right", "leftBirdID": "c44bcc1d-de5a-4872-b6e5-b5fbf3eaadae", "rightBirdID": "543e76d4-15cb-407b-abdc-874f96059bce"}'>
+                        hx-vals='{"winner": "right", "leftBirdID": """, "rightBirdID": ""}'>
                         This one!
                     </Button>
                 </div>
@@ -51,9 +51,9 @@
             class="flex flex-col mt-8 static shadow-md rounded-xl outline outline-green-800 items-center w-md bg-green-600">
             <div class="leaderboard-header">
                 <p>Visit the <a href="leaderboard.html"
-                        class="text-amber-300 hover:text-amber-100 underline">leaderboard</a></p>
+                        class="text-amber-300 hover:text-amber-100 underline italic">leaderboard</a></p>
             </div>
-            <div class="leaderboard-list p-2" hx-trigger="load" hx-get="/api/leaderboard" hx-swap="outerHTML"
+            <div class="leaderboard-list p-2" hx-trigger="load" hx-get="/api/leaderboard" hx-swap="innerHTML"
                 hx-vals='{"listLength": "5"}'>
                 <table>
                     <tr>
