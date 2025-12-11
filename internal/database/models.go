@@ -20,6 +20,7 @@ type Bird struct {
 	Family         sql.NullString
 	Order          sql.NullString
 	Status         sql.NullString
+	ImageUrls      []string
 }
 
 type Rating struct {

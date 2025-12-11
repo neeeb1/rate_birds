@@ -29,11 +29,11 @@ func main() {
 
 	fmt.Println("apicfg loaded")
 
-	//err = apiCfg.PopulateBirdDB()
-	//if err != nil {
-	//	fmt.Printf("failed to populate birds: %s", err)
-	//	return
-	//}
+	err = apiCfg.PopulateBirdDB()
+	if err != nil {
+		fmt.Printf("failed to populate birds: %s", err)
+		return
+	}
 
 	/* 	fmt.Println("Getting top 10 birds...")
 	   	topBirds, err := apiCfg.DbQueries.GetTopRatings(context.Background(), 10)

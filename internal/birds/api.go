@@ -18,7 +18,7 @@ func RegisterEndpoints(mux *http.ServeMux, cfg *ApiConfig) {
 
 func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("call to score match handler")
-	rng_bird, err := cfg.DbQueries.GetRandomBird(r.Context(), 2)
+	rng_bird, err := cfg.DbQueries.GetRandomBirdWithImage(r.Context(), 2)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -58,7 +58,7 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 	payload := fmt.Sprintf(
 		`<div id="bird-wrapper" class="w-screen h-3/4 grid grid-flow-col justify-items-center">
            <div class="shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="left-bird">
-                <img class="card-image object-cover aspect-square object-contain" src="assets/American_Barn_Owl,_Bear_River,_Utah_(9637780911).jpg">
+                <img class="card-image object-cover aspect-square object-contain" src="%s">
                 <div class="flex flex-col text-center">
                     <p>%s</p>
                     <p><em>%s</em></p>
@@ -74,7 +74,7 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 			</div>
             <div class="card-separator inline-block self-center">OR</div>
             <div class="shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="right-bird">
-                <img  class="card-image object-cover aspect-square box-content" src="assets/Anas_platyrhynchos_male_female_quadrat.jpg">
+                <img  class="card-image object-cover aspect-square box-content" src="%s">
                 <div class="flex flex-col text-center">
                     <p>%s</p>
                     <p><em>%s</em></p>
@@ -89,10 +89,12 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
                 </div>
             </div>
         </div>`,
+		newLeftBird.ImageUrls[0],
 		newLeftBird.CommonName.String,
 		newLeftBird.ScientificName.String,
 		newLeftBird.ID.String(),
 		newRightBird.ID.String(),
+		newRightBird.ImageUrls[0],
 		newRightBird.CommonName.String,
 		newRightBird.ScientificName.String,
 		newLeftBird.ID.String(),

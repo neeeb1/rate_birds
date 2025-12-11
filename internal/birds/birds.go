@@ -56,9 +56,11 @@ func (cfg *ApiConfig) PopulateBirdDB() error {
 				Family:         sql.NullString{String: b.Family, Valid: true},
 				Order:          sql.NullString{String: b.Order, Valid: true},
 				Status:         sql.NullString{String: b.Status, Valid: true},
+				ImageUrls:      b.Images,
 			}
 
-			_, err := cfg.DbQueries.CreateBird(context.Background(), params)
+			newBird, err := cfg.DbQueries.CreateBird(context.Background(), params)
+			fmt.Println(newBird.ImageUrls)
 			if err != nil {
 				return fmt.Errorf("failed to create database entry for bird: %s", err)
 			}

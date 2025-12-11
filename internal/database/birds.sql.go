@@ -10,10 +10,11 @@ import (
 	"database/sql"
 
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 const createBird = `-- name: CreateBird :one
-INSERT INTO birds  (id, created_at, updated_at, common_name, scientific_name, family, "order", status)
+INSERT INTO birds  (id, created_at, updated_at, common_name, scientific_name, family, "order", status, image_urls)
 VALUES ( 
   gen_random_uuid(),
   NOW(),
@@ -22,9 +23,10 @@ VALUES (
   $2,
   $3,
   $4,
-  $5
-) ON CONFLICT (common_name) DO UPDATE SET updated_at = NOW(), status = $5
-RETURNING id, created_at, updated_at, common_name, scientific_name, family, "order", status
+  $5,
+  $6
+) ON CONFLICT (common_name) DO UPDATE SET updated_at = NOW(), status = $5, image_urls = $6
+RETURNING id, created_at, updated_at, common_name, scientific_name, family, "order", status, image_urls
 `
 
 type CreateBirdParams struct {
@@ -33,6 +35,7 @@ type CreateBirdParams struct {
 	Family         sql.NullString
 	Order          sql.NullString
 	Status         sql.NullString
+	ImageUrls      []string
 }
 
 func (q *Queries) CreateBird(ctx context.Context, arg CreateBirdParams) (Bird, error) {
@@ -42,6 +45,7 @@ func (q *Queries) CreateBird(ctx context.Context, arg CreateBirdParams) (Bird, e
 		arg.Family,
 		arg.Order,
 		arg.Status,
+		pq.Array(arg.ImageUrls),
 	)
 	var i Bird
 	err := row.Scan(
@@ -53,12 +57,13 @@ func (q *Queries) CreateBird(ctx context.Context, arg CreateBirdParams) (Bird, e
 		&i.Family,
 		&i.Order,
 		&i.Status,
+		pq.Array(&i.ImageUrls),
 	)
 	return i, err
 }
 
 const getAllBirds = `-- name: GetAllBirds :many
-SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status from birds
+SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status, image_urls from birds
 `
 
 func (q *Queries) GetAllBirds(ctx context.Context) ([]Bird, error) {
@@ -79,6 +84,7 @@ func (q *Queries) GetAllBirds(ctx context.Context) ([]Bird, error) {
 			&i.Family,
 			&i.Order,
 			&i.Status,
+			pq.Array(&i.ImageUrls),
 		); err != nil {
 			return nil, err
 		}
@@ -94,7 +100,7 @@ func (q *Queries) GetAllBirds(ctx context.Context) ([]Bird, error) {
 }
 
 const getBirdByID = `-- name: GetBirdByID :one
-SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status from birds
+SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status, image_urls from birds
 WHERE id = $1
 `
 
@@ -110,12 +116,13 @@ func (q *Queries) GetBirdByID(ctx context.Context, id uuid.UUID) (Bird, error) {
 		&i.Family,
 		&i.Order,
 		&i.Status,
+		pq.Array(&i.ImageUrls),
 	)
 	return i, err
 }
 
 const getRandomBird = `-- name: GetRandomBird :many
-SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status from birds
+SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status, image_urls from birds
 ORDER by RANDOM()
 LIMIT $1
 `
@@ -138,6 +145,47 @@ func (q *Queries) GetRandomBird(ctx context.Context, limit int32) ([]Bird, error
 			&i.Family,
 			&i.Order,
 			&i.Status,
+			pq.Array(&i.ImageUrls),
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getRandomBirdWithImage = `-- name: GetRandomBirdWithImage :many
+SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status, image_urls from birds
+WHERE image_urls is NOT NULL
+ORDER by RANDOM()
+LIMIT $1
+`
+
+func (q *Queries) GetRandomBirdWithImage(ctx context.Context, limit int32) ([]Bird, error) {
+	rows, err := q.db.QueryContext(ctx, getRandomBirdWithImage, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Bird
+	for rows.Next() {
+		var i Bird
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.CommonName,
+			&i.ScientificName,
+			&i.Family,
+			&i.Order,
+			&i.Status,
+			pq.Array(&i.ImageUrls),
 		); err != nil {
 			return nil, err
 		}
