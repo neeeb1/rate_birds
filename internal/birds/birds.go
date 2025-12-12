@@ -50,17 +50,21 @@ func (cfg *ApiConfig) PopulateBirdDB() error {
 		}
 
 		for _, b := range birds.Birds {
+			var imageArray []string
+			if len(b.Images) != 0 {
+				imageArray = b.Images
+			}
+
 			params := database.CreateBirdParams{
 				CommonName:     sql.NullString{String: b.Name, Valid: true},
 				ScientificName: sql.NullString{String: b.SciName, Valid: true},
 				Family:         sql.NullString{String: b.Family, Valid: true},
 				Order:          sql.NullString{String: b.Order, Valid: true},
 				Status:         sql.NullString{String: b.Status, Valid: true},
-				ImageUrls:      b.Images,
+				ImageUrls:      imageArray,
 			}
 
-			newBird, err := cfg.DbQueries.CreateBird(context.Background(), params)
-			fmt.Println(newBird.ImageUrls)
+			_, err := cfg.DbQueries.CreateBird(context.Background(), params)
 			if err != nil {
 				return fmt.Errorf("failed to create database entry for bird: %s", err)
 			}
