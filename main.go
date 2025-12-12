@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/neeeb1/rate_birds/internal/birds"
 	"github.com/neeeb1/rate_birds/internal/database"
@@ -13,7 +12,11 @@ import (
 )
 
 func main() {
-	godotenv.Load()
+	/* 	err := godotenv.Load()
+	   	if err != nil {
+	   		fmt.Printf("Failed to load .env: %s\n", err)
+	   		return
+	   	} */
 
 	apiCfg := birds.ApiConfig{}
 
@@ -35,17 +38,11 @@ func main() {
 		return
 	}
 
-	/* 	fmt.Println("Getting top 10 birds...")
-	   	topBirds, err := apiCfg.DbQueries.GetTopRatings(context.Background(), 10)
-	   	if err != nil {
-	   		fmt.Println("Unable to get top birds, exiting...")
-	   		return
-	   	}
-
-	   	for i, b := range topBirds {
-	   		birdDb, _ := apiCfg.DbQueries.GetBirdByID(context.Background(), b.BirdID)
-	   		fmt.Printf("%d. %s (%d)\n", i+1, birdDb.CommonName.String, b.Rating.Int32)
-	   	} */
+	err = apiCfg.PopulateRatingsDB()
+	if err != nil {
+		fmt.Printf("failed to populate ratings: %s", err)
+		return
+	}
 
 	server.StartServer(apiCfg)
 }

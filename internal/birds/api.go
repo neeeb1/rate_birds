@@ -27,7 +27,7 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	leftBird, err := cfg.DbQueries.GetBirdByID(context.Background(), leftBirdID)
+	leftBird, err := cfg.DbQueries.GetBirdByID(r.Context(), leftBirdID)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -36,7 +36,7 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	rightBird, err := cfg.DbQueries.GetBirdByID(context.Background(), rightBirdID)
+	rightBird, err := cfg.DbQueries.GetBirdByID(r.Context(), rightBirdID)
 	if err != nil {
 		fmt.Println(err)
 	}
