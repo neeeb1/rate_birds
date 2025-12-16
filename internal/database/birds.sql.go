@@ -99,6 +99,33 @@ func (q *Queries) GetAllBirds(ctx context.Context) ([]Bird, error) {
 	return items, nil
 }
 
+const getAllImageUrls = `-- name: GetAllImageUrls :many
+SELECT image_urls from birds WHERE image_urls IS NOT NULL
+`
+
+func (q *Queries) GetAllImageUrls(ctx context.Context) ([][]string, error) {
+	rows, err := q.db.QueryContext(ctx, getAllImageUrls)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items [][]string
+	for rows.Next() {
+		var image_urls []string
+		if err := rows.Scan(pq.Array(&image_urls)); err != nil {
+			return nil, err
+		}
+		items = append(items, image_urls)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getBirdByID = `-- name: GetBirdByID :one
 SELECT id, created_at, updated_at, common_name, scientific_name, family, "order", status, image_urls from birds
 WHERE id = $1

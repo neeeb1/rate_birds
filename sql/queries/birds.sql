@@ -33,3 +33,6 @@ WHERE id = $1;
 
 -- name: GetTotalBirdCount :many
 SELECT count(*) from birds;
+
+-- name: GetAllImageUrls :many
+SELECT image_urls from birds WHERE image_urls IS NOT NULL;
