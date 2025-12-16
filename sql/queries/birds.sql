@@ -30,3 +30,6 @@ SELECT * from birds;
 -- name: GetBirdByID :one
 SELECT * from birds
 WHERE id = $1;
+
+-- name: GetTotalBirdCount :many
+SELECT count(*) from birds;
