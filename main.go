@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/neeeb1/rate_birds/internal/birds"
 	"github.com/neeeb1/rate_birds/internal/database"
@@ -12,11 +13,16 @@ import (
 )
 
 func main() {
-	/* 	err := godotenv.Load()
-	   	if err != nil {
-	   		fmt.Printf("Failed to load .env: %s\n", err)
-	   		return
-	   	} */
+	if !isRunningInDockerContainer() {
+		fmt.Println("Running locally, reading local .env")
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Printf("Failed to load .env: %s\n", err)
+			return
+		}
+	} else {
+		fmt.Println("Running in docker container, skipping local .env read")
+	}
 
 	apiCfg := birds.ApiConfig{}
 
@@ -45,4 +51,17 @@ func main() {
 	}
 
 	server.StartServer(apiCfg)
+}
+
+func isRunningInDockerContainer() bool {
+	// docker creates a .dockerenv file at the root
+	// of the directory tree inside the container.
+	// if this file exists then the viewer is running
+	// from inside a container so return true
+
+	if _, err := os.Stat("/.dockerenv"); err == nil {
+		return true
+	}
+
+	return false
 }
