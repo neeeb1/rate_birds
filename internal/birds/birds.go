@@ -31,6 +31,9 @@ type Bird struct {
 }
 
 func (cfg *ApiConfig) PopulateBirdDB() error {
+	fmt.Println("---* Populating birds db from Nuthatch API *---")
+	fmt.Println()
+
 	intialFetch, err := cfg.GetNuthatchBirds(1, 1)
 	if err != nil {
 		return err
@@ -69,14 +72,22 @@ func (cfg *ApiConfig) PopulateBirdDB() error {
 				return fmt.Errorf("failed to create database entry for bird: %s", err)
 			}
 		}
-
 		page++
+	}
+	count, err := cfg.DbQueries.GetTotalBirdCount(context.Background())
+	if err != nil {
+		fmt.Printf("failed to count birds in db: %s\n", err)
+	} else {
+		fmt.Printf("Success - database contains %d entries\n", count)
 	}
 
 	return nil
 }
 
 func (cfg *ApiConfig) PopulateRatingsDB() error {
+	fmt.Println("---* Populating ratings db *---")
+	fmt.Println()
+
 	birds, err := cfg.DbQueries.GetAllBirds(context.Background())
 	if err != nil {
 		return err
