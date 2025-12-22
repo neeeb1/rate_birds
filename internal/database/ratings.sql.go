@@ -82,6 +82,17 @@ func (q *Queries) GetTopRatings(ctx context.Context, limit int32) ([]Rating, err
 	return items, nil
 }
 
+const getTotalRatings = `-- name: GetTotalRatings :one
+SELECT count(*) from ratings
+`
+
+func (q *Queries) GetTotalRatings(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getTotalRatings)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const populateRating = `-- name: PopulateRating :exec
 INSERT INTO ratings (
     id,

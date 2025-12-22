@@ -227,29 +227,13 @@ func (q *Queries) GetRandomBirdWithImage(ctx context.Context, limit int32) ([]Bi
 	return items, nil
 }
 
-const getTotalBirdCount = `-- name: GetTotalBirdCount :many
+const getTotalBirdCount = `-- name: GetTotalBirdCount :one
 SELECT count(*) from birds
 `
 
-func (q *Queries) GetTotalBirdCount(ctx context.Context) ([]int64, error) {
-	rows, err := q.db.QueryContext(ctx, getTotalBirdCount)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []int64
-	for rows.Next() {
-		var count int64
-		if err := rows.Scan(&count); err != nil {
-			return nil, err
-		}
-		items = append(items, count)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) GetTotalBirdCount(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getTotalBirdCount)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }

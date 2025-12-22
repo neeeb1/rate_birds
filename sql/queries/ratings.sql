@@ -38,3 +38,6 @@ RETURNING *;
 SELECT * from ratings
 ORDER BY rating DESC
 LIMIT $1;
+
+-- name: GetTotalRatings :one
+SELECT count(*) from ratings;

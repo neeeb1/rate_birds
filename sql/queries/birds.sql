@@ -31,7 +31,7 @@ SELECT * from birds;
 SELECT * from birds
 WHERE id = $1;
 
--- name: GetTotalBirdCount :many
+-- name: GetTotalBirdCount :one
 SELECT count(*) from birds;
 
 -- name: GetAllImageUrls :many
