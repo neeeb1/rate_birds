@@ -6,6 +6,7 @@ services:
     environment:
       NUTHATCH_KEY: ${NUTHATCH_KEY}
       DB_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=disable
+      CACHE_HOST: ${CACHE_HOST}
     env_file:
       - ./.env
     depends_on:
@@ -43,8 +44,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    ports:
-      - 5432:5432
     volumes:
       - pg-data:/var/lib/postgresql/data
     networks:
@@ -59,10 +58,27 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      - GOOSE_DRIVER=postgres
-      - GOOSE_DBSTRING=host=${POSTGRES_HOST} port=5432 user=${POSTGRES_USER} password=${POSTGRES_PASSWORD} dbname=${POSTGRES_DB}
+      GOOSE_DRIVER: postgres
+      GOOSE_DBSTRING: host=${POSTGRES_HOST} port=5432 user=${POSTGRES_USER} password=${POSTGRES_PASSWORD} dbname=${POSTGRES_DB}
     volumes:
       - ./sql/schema:/migrations
+    networks:
+      - go-app-network
+
+  caching:
+    image: ghcr.io/willnorris/imageproxy
+    restart: unless-stopped
+    container_name: go-app-cache
+    ports:
+      - 1337:1337
+    volumes:
+      - cache-data:/tmp/imageproxy
+    env_file:
+      - ./.env
+    command: -addr ${IMAGEPROXY_ADDR} -cache ${IMAGEPROXY_CACHE}
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - go-app-network
 
@@ -70,6 +86,7 @@ volumes:
   pg-data:
   caddy-config:
   caddy-data:
+  cache-data:
 
 networks:
   go-app-network:

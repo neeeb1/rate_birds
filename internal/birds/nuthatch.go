@@ -14,6 +14,7 @@ type ApiConfig struct {
 	NuthatcherApiKey string
 	DbURL            string
 	DbQueries        *database.Queries
+	CacheHost        string
 }
 
 func (cfg *ApiConfig) GetNuthatchBirds(page, pageSize int) (BirdsJson, error) {

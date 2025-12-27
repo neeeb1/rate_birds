@@ -4,7 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"io"
 	"math"
+	"net/http"
+	"time"
 
 	"github.com/neeeb1/rate_birds/internal/database"
 )
@@ -31,8 +34,7 @@ type Bird struct {
 }
 
 func (cfg *ApiConfig) PopulateBirdDB() error {
-	fmt.Println("---* Populating birds db from Nuthatch API *---")
-	fmt.Println()
+	fmt.Println("\n---* Populating birds db from Nuthatch API *---")
 
 	intialFetch, err := cfg.GetNuthatchBirds(1, 1)
 	if err != nil {
@@ -78,15 +80,14 @@ func (cfg *ApiConfig) PopulateBirdDB() error {
 	if err != nil {
 		fmt.Printf("failed to count birds in db: %s\n", err)
 	} else {
-		fmt.Printf("Success - database contains %d entries\n", count)
+		fmt.Printf("Success - database contains %d bird entries\n", count)
 	}
 
 	return nil
 }
 
 func (cfg *ApiConfig) PopulateRatingsDB() error {
-	fmt.Println("---* Populating ratings db *---")
-	fmt.Println()
+	fmt.Println("\n---* Populating ratings db *---")
 
 	birds, err := cfg.DbQueries.GetAllBirds(context.Background())
 	if err != nil {
@@ -108,5 +109,51 @@ func (cfg *ApiConfig) PopulateRatingsDB() error {
 		}
 	}
 
+	count, err := cfg.DbQueries.GetTotalRatings(context.Background())
+	if err != nil {
+		fmt.Printf("failed to count ratings in db: %s\n", err)
+	} else {
+		fmt.Printf("Success - database contains %d rating entries\n", count)
+	}
+	return nil
+}
+
+func (cfg *ApiConfig) CacheImages() error {
+	imageUrls, err := cfg.DbQueries.GetAllImageUrls(context.Background())
+	if err != nil {
+		return fmt.Errorf("failed to get all image urls in db: %s", err)
+	}
+
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
+	var total int
+
+	for _, urls := range imageUrls {
+		for _, u := range urls {
+			//fmt.Println(u)
+			cacheUrl := fmt.Sprintf("http://%s:1337/%s", cfg.CacheHost, u)
+
+			res, err := client.Get(cacheUrl)
+			if err != nil {
+				fmt.Printf("error caching image url (%s): %s\n", u, err)
+				continue
+			}
+
+			io.Copy(io.Discard, res.Body)
+			res.Body.Close()
+
+			if res.StatusCode == http.StatusNotFound {
+				fmt.Printf("response: not found\n")
+				continue
+			}
+
+			fmt.Printf("Image cached (%s)\n", u)
+			total += 1
+		}
+	}
+
+	fmt.Printf("Successfully cached %d images", total)
 	return nil
 }

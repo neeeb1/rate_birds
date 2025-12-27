@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"os"
@@ -28,6 +29,7 @@ func main() {
 
 	apiCfg.NuthatcherApiKey = os.Getenv("NUTHATCH_KEY")
 	apiCfg.DbURL = os.Getenv("DB_URL")
+	apiCfg.CacheHost = os.Getenv("CACHE_HOST")
 
 	db, err := sql.Open("postgres", apiCfg.DbURL)
 	if err != nil {
@@ -38,15 +40,30 @@ func main() {
 
 	fmt.Println("apicfg loaded")
 
-	err = apiCfg.PopulateBirdDB()
+	count, err := apiCfg.DbQueries.GetTotalBirdCount(context.Background())
 	if err != nil {
-		fmt.Printf("failed to populate birds: %s", err)
+		fmt.Printf("failed to count db entries: %s", err)
 		return
+	}
+	if count == 0 {
+		err = apiCfg.PopulateBirdDB()
+		if err != nil {
+			fmt.Printf("failed to populate birds: %s", err)
+			return
+		}
+	} else {
+		fmt.Println("Bird db already populated - skipping intial population...")
 	}
 
 	err = apiCfg.PopulateRatingsDB()
 	if err != nil {
 		fmt.Printf("failed to populate ratings: %s", err)
+		return
+	}
+
+	err = apiCfg.CacheImages()
+	if err != nil {
+		fmt.Printf("failed to cache remote images: %s", err)
 		return
 	}
 
