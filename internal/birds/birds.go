@@ -119,16 +119,19 @@ func (cfg *ApiConfig) PopulateRatingsDB() error {
 }
 
 func (cfg *ApiConfig) CacheImages() error {
+	fmt.Println("\n*-- Starting initial image caching --*")
+	startTime := time.Now()
 	imageUrls, err := cfg.DbQueries.GetAllImageUrls(context.Background())
 	if err != nil {
 		return fmt.Errorf("failed to get all image urls in db: %s", err)
 	}
 
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 15 * time.Second,
 	}
 
-	var total int
+	var totalSuccess int
+	var totalFailure int
 
 	for _, urls := range imageUrls {
 		for _, u := range urls {
@@ -138,6 +141,7 @@ func (cfg *ApiConfig) CacheImages() error {
 			res, err := client.Get(cacheUrl)
 			if err != nil {
 				fmt.Printf("error caching image url (%s): %s\n", u, err)
+				totalFailure += 1
 				continue
 			}
 
@@ -146,14 +150,18 @@ func (cfg *ApiConfig) CacheImages() error {
 
 			if res.StatusCode == http.StatusNotFound {
 				fmt.Printf("response: not found\n")
+				totalFailure += 1
 				continue
 			}
 
 			fmt.Printf("Image cached (%s)\n", u)
-			total += 1
+			totalSuccess += 1
 		}
 	}
 
-	fmt.Printf("Successfully cached %d images", total)
+	fmt.Printf("Successfully cached %d images\n", totalSuccess)
+	fmt.Printf("%d images failed to cache\n", totalFailure)
+	timeElapsed := time.Since(startTime)
+	fmt.Printf("Total cachine time: %s\n", timeElapsed)
 	return nil
 }
