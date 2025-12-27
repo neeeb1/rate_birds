@@ -54,8 +54,8 @@ func (cfg *ApiConfig) ScoreMatch(winner, loser database.Bird) error {
 		return err
 	}
 
-	fmt.Printf("Updated ratings for %s and %s\n", winner.CommonName.String, loser.CommonName.String)
-	fmt.Printf("'%s': %d || '%s': %d\n", winner.CommonName.String, winnerNewRating, loser.CommonName.String, loserNewRating)
+	//fmt.Printf("Updated ratings for %s and %s\n", winner.CommonName.String, loser.CommonName.String)
+	fmt.Printf("(W) '%s': %d || (L) '%s': %d\n", winner.CommonName.String, winnerNewRating, loser.CommonName.String, loserNewRating)
 	return nil
 }
 
