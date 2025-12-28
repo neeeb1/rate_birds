@@ -62,7 +62,7 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 	payload := fmt.Sprintf(
 		`<div id="bird-wrapper" class="w-screen h-3/4 grid grid-flow-col justify-items-center">
            <div class="shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="left-bird">
-                <img class="card-image object-cover aspect-square object-contain" src="/api/image?url=%s">
+                <img class="card-image object-cover aspect-square object-contain h-2/3" src="/api/image?url=%s">
                 <div class="flex flex-col text-center">
                     <p>%s</p>
                     <p><em>%s</em></p>
@@ -78,7 +78,7 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 			</div>
             <div class="card-separator inline-block self-center">OR</div>
             <div class="shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="right-bird">
-                <img  class="card-image object-cover aspect-square box-content" src="/api/image?url=%s">
+                <img  class="card-image object-cover aspect-square box-content h-2/3" src="/api/image?url=%s">
                 <div class="flex flex-col text-center">
                     <p>%s</p>
                     <p><em>%s</em></p>
@@ -163,7 +163,7 @@ func (cfg *ApiConfig) handleCachedImage(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	cacheURL := fmt.Sprintf("http://%s:1337/%s", cfg.CacheHost, imageURL)
+	cacheURL := fmt.Sprintf("http://%s:1337/200x200,sc/%s", cfg.CacheHost, imageURL)
 
 	client := &http.Client{
 		Timeout: 30 * time.Second,
