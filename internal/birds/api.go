@@ -98,7 +98,7 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 		newLeftBird.ScientificName.String,
 		newLeftBird.ID.String(),
 		newRightBird.ID.String(),
-		url.QueryEscape(newLeftBird.ImageUrls[0]),
+		url.QueryEscape(newRightBird.ImageUrls[0]),
 		newRightBird.CommonName.String,
 		newRightBird.ScientificName.String,
 		newLeftBird.ID.String(),

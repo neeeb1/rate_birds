@@ -7,6 +7,7 @@ import (
 	"io"
 	"math"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/neeeb1/rate_birds/internal/database"
@@ -121,47 +122,73 @@ func (cfg *ApiConfig) PopulateRatingsDB() error {
 func (cfg *ApiConfig) CacheImages() error {
 	fmt.Println("\n*-- Starting initial image caching --*")
 	startTime := time.Now()
+
 	imageUrls, err := cfg.DbQueries.GetAllImageUrls(context.Background())
 	if err != nil {
 		return fmt.Errorf("failed to get all image urls in db: %s", err)
 	}
 
-	client := &http.Client{
-		Timeout: 15 * time.Second,
-	}
-
 	var totalSuccess int
 	var totalFailure int
 
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
+	maxConcurrent := 30
+	semaphore := make(chan struct{}, maxConcurrent)
+
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+
 	for _, urls := range imageUrls {
 		for _, u := range urls {
-			//fmt.Println(u)
-			cacheUrl := fmt.Sprintf("http://%s:1337/%s", cfg.CacheHost, u)
+			wg.Add(1)
 
-			res, err := client.Get(cacheUrl)
-			if err != nil {
-				fmt.Printf("error caching image url (%s): %s\n", u, err)
-				totalFailure += 1
-				continue
-			}
+			go func(url string) {
+				defer wg.Done()
 
-			io.Copy(io.Discard, res.Body)
-			res.Body.Close()
+				semaphore <- struct{}{}
+				defer func() { <-semaphore }()
 
-			if res.StatusCode == http.StatusNotFound {
-				fmt.Printf("response: not found\n")
-				totalFailure += 1
-				continue
-			}
+				//fmt.Println(u)
+				cacheUrl := fmt.Sprintf("http://%s:1337/200x200,sc/%s", cfg.CacheHost, u)
 
-			fmt.Printf("Image cached (%s)\n", u)
-			totalSuccess += 1
+				res, err := client.Get(cacheUrl)
+				if err != nil {
+					fmt.Printf("error caching image url (%s): %s\n", u, err)
+					mu.Lock()
+					totalFailure += 1
+					mu.Unlock()
+					return
+				}
+
+				io.Copy(io.Discard, res.Body)
+				res.Body.Close()
+
+				if res.StatusCode == http.StatusNotFound {
+					fmt.Printf("response: not found\n")
+					mu.Lock()
+					totalFailure += 1
+					mu.Unlock()
+					return
+				}
+
+				fmt.Printf("Image cached (%s)\n", u)
+				mu.Lock()
+				totalSuccess += 1
+				mu.Unlock()
+			}(u)
 		}
 	}
+
+	wg.Wait()
 
 	fmt.Printf("Successfully cached %d images\n", totalSuccess)
 	fmt.Printf("%d images failed to cache\n", totalFailure)
 	timeElapsed := time.Since(startTime)
 	fmt.Printf("Total cachine time: %s\n", timeElapsed)
+	fmt.Println("*-- Initial image caching completed --*")
+
 	return nil
 }
