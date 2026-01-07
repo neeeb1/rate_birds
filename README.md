@@ -190,11 +190,6 @@ Once the server is running, you can interact with the application:
 ## License
 This project is open-source and licensed under the MIT License.
 
-## Author Info
-**neeeb1**
-*   **LinkedIn**: [LinkedIn Profile](https://linkedin.com/in/yourusername)
-*   **Twitter**: [@yourtwitter](https://twitter.com/yourtwitter)
-*   **Portfolio**: [your-portfolio.com](https://your-portfolio.com)
 
 ---
 
