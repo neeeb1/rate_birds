@@ -18,14 +18,11 @@ func RegisterEndpoints(mux *http.ServeMux, cfg *ApiConfig) {
 	mux.HandleFunc("GET /api/scorematch/", cfg.handleScoreMatch)
 	mux.HandleFunc("GET /api/leaderboard/", cfg.handleLoadLeaderboard)
 	mux.HandleFunc("GET /api/image/", cfg.handleCachedImage)
+	mux.HandleFunc("GET /api/loadbirds/", cfg.handleLoadBirds)
 }
 
 func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("call to score match handler")
-	rng_bird, err := cfg.DbQueries.GetRandomBirdWithImage(r.Context(), 2)
-	if err != nil {
-		fmt.Println(err)
-	}
 
 	leftBirdID, err := uuid.Parse(r.URL.Query().Get("leftBirdID"))
 	if err != nil {
@@ -55,13 +52,24 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
 		cfg.ScoreMatch(rightBird, leftBird)
 	}
 
+	cfg.handleLoadBirds(w, r)
+}
+
+func (cfg *ApiConfig) handleLoadBirds(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("call to load bird handler")
+	rng_bird, err := cfg.DbQueries.GetRandomBirdWithImage(r.Context(), 2)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	newLeftBird := rng_bird[0]
 	newRightBird := rng_bird[1]
 
 	w.Header().Add("Content-Type", "text/html; charset=utf-8")
 	payload := fmt.Sprintf(
-		`<div id="bird-wrapper" class="w-screen h-3/4 grid grid-flow-col justify-items-center">
-           <div class="shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="left-bird">
+		`<div id="bird-wrapper" class="w-full max-w-6xl p-6 flex flex-row sm:flex-col gap-6 items-stretch justify-center">
+            <!-- Left Bird Card -->
+			<div class="m-32 shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="left-bird">
                 <img class="card-image object-cover aspect-square object-contain h-2/3" src="/api/image?url=%s">
                 <div class="flex flex-col text-center">
                     <p>%s</p>
@@ -76,8 +84,8 @@ func (cfg *ApiConfig) handleScoreMatch(w http.ResponseWriter, r *http.Request) {
                     </Button>
                 </div>
 			</div>
-            <div class="card-separator inline-block self-center">OR</div>
-            <div class="shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="right-bird">
+			<!-- Right Bird Card -->
+            <div class="m-32 shadow-lg rounded-sm w-2/3 p-6 flex flex-col align-items-center bg-zinc-300" id="right-bird">
                 <img  class="card-image object-cover aspect-square box-content h-2/3" src="/api/image?url=%s">
                 <div class="flex flex-col text-center">
                     <p>%s</p>
@@ -163,7 +171,7 @@ func (cfg *ApiConfig) handleCachedImage(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	cacheURL := fmt.Sprintf("http://%s:1337/200x200,sc/%s", cfg.CacheHost, imageURL)
+	cacheURL := fmt.Sprintf("http://%s:1337/sc/%s", cfg.CacheHost, imageURL)
 
 	client := &http.Client{
 		Timeout: 30 * time.Second,

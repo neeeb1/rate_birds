@@ -13,6 +13,9 @@ import (
 	"github.com/neeeb1/rate_birds/internal/database"
 )
 
+const maxConcurrent = 50
+const cacheTimeoutSeconds = 30
+
 type BirdsJson struct {
 	Birds    []Bird `json:"entities"`
 	Total    int    `json:"total"`
@@ -132,10 +135,9 @@ func (cfg *ApiConfig) CacheImages() error {
 	var totalFailure int
 
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: cacheTimeoutSeconds * time.Second,
 	}
 
-	maxConcurrent := 30
 	semaphore := make(chan struct{}, maxConcurrent)
 
 	var wg sync.WaitGroup
