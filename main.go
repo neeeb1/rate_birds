@@ -52,7 +52,7 @@ func main() {
 			return
 		}
 	} else {
-		fmt.Println("Bird db already populated - skipping intial population...")
+		fmt.Println("Bird db already populated - skipping initial population...")
 	}
 
 	err = apiCfg.PopulateRatingsDB()
@@ -61,11 +61,11 @@ func main() {
 		return
 	}
 
-	err = apiCfg.CacheImages()
-	if err != nil {
-		fmt.Printf("failed to cache remote images: %s", err)
-		return
-	}
+	/* 	err = apiCfg.CacheImages()
+	   	if err != nil {
+	   		fmt.Printf("failed to cache remote images: %s", err)
+	   		return
+	   	} */
 
 	server.StartServer(apiCfg)
 }
