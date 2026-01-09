@@ -16,13 +16,28 @@ const (
 )
 
 func (cfg *ApiConfig) ScoreMatch(winner, loser database.Bird) error {
-	winnerDb, err := cfg.DbQueries.GetRatingByBirdID(context.Background(), winner.ID)
+	ctx := context.Background()
+
+	tx, err := cfg.Db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("unable to start sql transaction: %w", err)
+	}
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	qtx := cfg.DbQueries.WithTx(tx)
+
+	winnerDb, err := qtx.GetRatingByBirdID(ctx, winner.ID)
 	if err != nil {
 		return err
 	}
 	winnerRating := winnerDb.Rating.Int32
 
-	loserDb, err := cfg.DbQueries.GetRatingByBirdID(context.Background(), loser.ID)
+	loserDb, err := qtx.GetRatingByBirdID(ctx, loser.ID)
 	if err != nil {
 		return err
 	}
@@ -39,7 +54,7 @@ func (cfg *ApiConfig) ScoreMatch(winner, loser database.Bird) error {
 		Rating: sql.NullInt32{Int32: winnerNewRating, Valid: true},
 		BirdID: winnerDb.BirdID,
 	}
-	_, err = cfg.DbQueries.UpdateRatingByBirdID(context.Background(), winParams)
+	_, err = qtx.UpdateRatingByBirdID(ctx, winParams)
 	if err != nil {
 		return err
 	}
@@ -48,10 +63,15 @@ func (cfg *ApiConfig) ScoreMatch(winner, loser database.Bird) error {
 		Rating: sql.NullInt32{Int32: loserNewRating, Valid: true},
 		BirdID: loserDb.BirdID,
 	}
-	_, err = cfg.DbQueries.UpdateRatingByBirdID(context.Background(), loseParams)
+	_, err = qtx.UpdateRatingByBirdID(ctx, loseParams)
 	if err != nil {
 		fmt.Println(err)
 		return err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return fmt.Errorf("unable to commit sql transaction: %w", err)
 	}
 
 	//fmt.Printf("Updated ratings for %s and %s\n", winner.CommonName.String, loser.CommonName.String)

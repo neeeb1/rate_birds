@@ -1,6 +1,7 @@
 package birds
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,6 +15,7 @@ type ApiConfig struct {
 	NuthatcherApiKey string
 	DbURL            string
 	DbQueries        *database.Queries
+	Db               *sql.DB
 	CacheHost        string
 }
 
