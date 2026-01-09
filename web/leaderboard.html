@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="output.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"
+        integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header class="header relative top-0 m-0 p-0 max-w-screen text-center bg-green-700">
+        <h3>Rate<em>(the)Birds</em></h3>
+        <a href="index.html" class="underline text-amber-300 hover:text-amber-100 justify-end">Home</a>
+    </header>
+    <div class="flex p-2 items-center justify-center min-h-svh h-fit w-screen bg-amber-200">
+        <div id="leaderboard-wrapper"
+            class="flex flex-col mt-4 shadow-lg rounded-xl outline outline-green-800 items-center min-h-3/4 h-fit w-xl bg-green-500">
+            <div class="leaderboard-header flex flex-col">
+                <p>Top of the flock</p>
+                <label for="items">Items in list...</label>
+                <div>
+                    <select name="listLength" class="accent-white">
+                        <option value="5">5</option>
+                        <option value="10" selected="selected">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <button
+                        class="rounded-md outline border-green-800 text-green-800 hover:border-transparent hover:bg-green-800 hover:text-white active:bg-green-900"
+                        hx-trigger="click" hx-target="#leaderboard-list" hx-get="/api/leaderboard" hx-swap="innerHTML"
+                        hx-include="[name='listLength']">Reload...</button>
+                </div>
+            </div>
+            <div id="leaderboard-list" class="leaderboard-list" hx-trigger="load" hx-get="/api/leaderboard"
+                hx-swap="innerHTML" hx-vals='{"listLength": "10"}'>
+                <table>
+                    <tr>
+                        <th>Ranking</th>
+                        <th>Common Name</th>
+                        <th>ELO Score</th>
+                    </tr>
+                    <tr class="leaderboard-first">
+                        <td>1.</td>
+                        <td>defaulticus maximus</td>
+                        <td>999999999</td>
+                    </tr>
+                    <tr class="leaderboard-second">
+                        <td>2.</td>
+                        <td>defaulticus medius</td>
+                        <td>999999998</td>
+                    </tr>
+                    <tr class="leaderboard-third">
+                        <td>3.</td>
+                        <td>defaulticus minimus</td>
+                        <td>999999997</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="footer relative inset-x-0 bottom-0 m-0 p-0 w-screen text-center bg-green-700">
+        <p>Copyright Neeeb | 2025</p>
+    </div>
+</body>
+
+</html>

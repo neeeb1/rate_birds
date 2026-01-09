@@ -3,21 +3,22 @@ export
 
 BINARY_NAME=go-app
 
-build:
+build-app:
 	go build -o ./bin/${BINARY_NAME} main.go
 
 run:
-	go run
+	make build
+	./bin/${BINARY_NAME}
 
 clean:
 	go clean
 	rm ./bin/${BINARY_NAME}
 
 compose-up:
-	docker compose up --build -d
+	docker compose -f ./build/docker-compose.yml up --build -d
 
 compose-down:
-	docker compose down
+	docker compose -f ./build/docker-compose.yml down
 
 sqlc:
 	sqlc generate

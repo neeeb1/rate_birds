@@ -14,7 +14,7 @@ import (
 )
 
 func RegisterEndpoints(mux *http.ServeMux, cfg *ApiConfig) {
-	mux.Handle("/", http.FileServer(http.Dir(".")))
+	mux.Handle("/", http.FileServer(http.Dir("./web")))
 	mux.HandleFunc("GET /api/scorematch/", cfg.handleScoreMatch)
 	mux.HandleFunc("GET /api/leaderboard/", cfg.handleLoadLeaderboard)
 	mux.HandleFunc("GET /api/image/", cfg.handleCachedImage)
