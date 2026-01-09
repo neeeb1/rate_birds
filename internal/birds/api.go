@@ -124,6 +124,12 @@ func (cfg *ApiConfig) handleLoadLeaderboard(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	if listLength <= 0 || listLength > 1000 {
+		err := fmt.Errorf("listLength must be between 1-1000")
+		fmt.Println(err)
+		listLength = 10
+	}
+
 	topBirds, err := cfg.DbQueries.GetTopRatings(r.Context(), int32(listLength))
 	if err != nil {
 		fmt.Println(err)
