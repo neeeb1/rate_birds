@@ -36,6 +36,7 @@ func main() {
 		fmt.Printf("failed to open db: %s", err)
 		return
 	}
+	apiCfg.Db = db
 	apiCfg.DbQueries = database.New(db)
 
 	fmt.Println("apicfg loaded")
@@ -52,7 +53,7 @@ func main() {
 			return
 		}
 	} else {
-		fmt.Println("Bird db already populated - skipping initial population...")
+		fmt.Println("Bird db already populated - skipping intial population...")
 	}
 
 	err = apiCfg.PopulateRatingsDB()
@@ -67,7 +68,7 @@ func main() {
 	   		return
 	   	} */
 
-	server.StartServer(apiCfg)
+	server.StartServer(&apiCfg)
 }
 
 func isRunningInDockerContainer() bool {

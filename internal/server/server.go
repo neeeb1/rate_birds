@@ -7,9 +7,9 @@ import (
 	"github.com/neeeb1/rate_birds/internal/birds"
 )
 
-func StartServer(cfg birds.ApiConfig) {
+func StartServer(cfg *birds.ApiConfig) {
 	mux := http.NewServeMux()
-	birds.RegisterEndpoints(mux, &cfg)
+	birds.RegisterEndpoints(mux, cfg)
 
 	server := http.Server{}
 
