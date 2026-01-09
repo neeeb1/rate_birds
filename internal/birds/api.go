@@ -136,12 +136,6 @@ func (cfg *ApiConfig) handleLoadLeaderboard(w http.ResponseWriter, r *http.Reque
 	builder.WriteString("<table>\n")
 
 	for i, rating := range topBirds {
-		bird, err := cfg.DbQueries.GetBirdByID(r.Context(), rating.BirdID)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
 		row := fmt.Sprintf(
 			`<tr>
 				<td>%d.</td>
@@ -150,7 +144,7 @@ func (cfg *ApiConfig) handleLoadLeaderboard(w http.ResponseWriter, r *http.Reque
 			</tr>
 			`,
 			i+1,
-			bird.CommonName.String,
+			rating.CommonName.String,
 			rating.Rating.Int32,
 		)
 		builder.WriteString(row)
