@@ -69,8 +69,7 @@ func (cfg *ApiConfig) ScoreMatch(winner, loser database.Bird) error {
 		return err
 	}
 
-	err = tx.Commit()
-	if err != nil {
+	if err = tx.Commit(); err != nil {
 		return fmt.Errorf("unable to commit sql transaction: %w", err)
 	}
 

@@ -1,7 +1,6 @@
 package birds
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -125,7 +124,7 @@ func (cfg *ApiConfig) handleLoadLeaderboard(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	topBirds, err := cfg.DbQueries.GetTopRatings(context.Background(), int32(listLength))
+	topBirds, err := cfg.DbQueries.GetTopRatings(r.Context(), int32(listLength))
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -136,8 +135,8 @@ func (cfg *ApiConfig) handleLoadLeaderboard(w http.ResponseWriter, r *http.Reque
 	var builder strings.Builder
 	builder.WriteString("<table>\n")
 
-	for i, r := range topBirds {
-		bird, err := cfg.DbQueries.GetBirdByID(context.Background(), r.BirdID)
+	for i, rating := range topBirds {
+		bird, err := cfg.DbQueries.GetBirdByID(r.Context(), rating.BirdID)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -152,7 +151,7 @@ func (cfg *ApiConfig) handleLoadLeaderboard(w http.ResponseWriter, r *http.Reque
 			`,
 			i+1,
 			bird.CommonName.String,
-			r.Rating.Int32,
+			rating.Rating.Int32,
 		)
 		builder.WriteString(row)
 	}
