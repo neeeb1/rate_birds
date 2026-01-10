@@ -53,7 +53,7 @@ func main() {
 			return
 		}
 	} else {
-		fmt.Println("Bird db already populated - skipping intial population...")
+		fmt.Println("Bird db already populated - skipping initial population...")
 	}
 
 	err = apiCfg.PopulateRatingsDB()
