@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 	"time"
@@ -188,10 +189,32 @@ func (cfg *ApiConfig) CacheImages() error {
 	return nil
 }
 
+// shrinkSourceURL asks the image host to return a pre-resized image so we
+// download and decode a small file instead of a full-resolution one. We resize
+// to 500x500 in uploadImageToS3 anyway, so a ~600px source is plenty. Unsplash
+// honors w/q/fm query params; other hosts are returned unchanged.
+func shrinkSourceURL(sourceURL string) string {
+	if !strings.Contains(sourceURL, "images.unsplash.com") {
+		return sourceURL
+	}
+
+	u, err := url.Parse(sourceURL)
+	if err != nil {
+		return sourceURL
+	}
+
+	q := u.Query()
+	q.Set("w", "600")
+	q.Set("q", "80")
+	q.Set("fm", "jpg")
+	u.RawQuery = q.Encode()
+	return u.String()
+}
+
 func (cfg *ApiConfig) uploadImageToS3(sourceURL, key string) error {
 	client := &http.Client{Timeout: 30 * time.Second}
 
-	resp, err := client.Get(sourceURL)
+	resp, err := client.Get(shrinkSourceURL(sourceURL))
 	if err != nil {
 		return fmt.Errorf("failed to download image: %w", err)
 	}
