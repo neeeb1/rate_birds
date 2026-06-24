@@ -10,7 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const maxConcurrent = 50
+const maxConcurrent = 3
 const cacheTimeoutSeconds = 30
 
 type BirdsJson struct {

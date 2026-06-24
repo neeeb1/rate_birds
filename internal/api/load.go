@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"fmt"
+	"math/rand"
 
 	"net/http"
 	"strconv"
@@ -19,12 +20,21 @@ const (
 )
 
 func (cfg *ApiConfig) handleLoadBirds(w http.ResponseWriter, r *http.Request) {
+	if cfg.DbQueries == nil {
+		RespondWithError(w, 503, "Database unavailable")
+		return
+	}
 	log.Info().Msg("call to load bird handler")
 
 	rng_bird, err := cfg.DbQueries.GetRandomBirdWithImage(r.Context(), 2)
 	if err != nil {
 		log.Error().Err(err).Msg("failed to get random birds with images")
 		RespondWithError(w, 503, "Failed to get random birds with images")
+		return
+	}
+	if len(rng_bird) < 2 {
+		log.Warn().Int("got", len(rng_bird)).Msg("not enough birds with images")
+		RespondWithError(w, 503, "Not enough birds with images available")
 		return
 	}
 
@@ -102,13 +112,13 @@ func (cfg *ApiConfig) handleLoadBirds(w http.ResponseWriter, r *http.Request) {
 				</button>
 			</div>
 		</div>`,
-		newLeftBird.ImageUrls[0],
+		cfg.PresignImageURL(newLeftBird.ImageUrls[rand.Intn(len(newLeftBird.ImageUrls))]),
 		newLeftBird.CommonName.String,
 		newLeftBird.CommonName.String,
 		newLeftBird.ScientificName.String,
 		newLeftBird.ID.String(),
 		newRightBird.ID.String(),
-		newRightBird.ImageUrls[0],
+		cfg.PresignImageURL(newRightBird.ImageUrls[rand.Intn(len(newRightBird.ImageUrls))]),
 		newRightBird.CommonName.String,
 		newRightBird.CommonName.String,
 		newRightBird.ScientificName.String,
@@ -120,6 +130,10 @@ func (cfg *ApiConfig) handleLoadBirds(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cfg *ApiConfig) handleLoadLeaderboard(w http.ResponseWriter, r *http.Request) {
+	if cfg.DbQueries == nil {
+		RespondWithError(w, 503, "Database unavailable")
+		return
+	}
 	log.Info().Msg("call to load leaderboard handler")
 
 	listLength, err := validateListLength(r.URL.Query().Get("listLength"))
