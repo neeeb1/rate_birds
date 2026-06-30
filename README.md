@@ -9,7 +9,7 @@ Check it out at [wingleader.app](https://wingleader.app)
 
 ---
 
-Wing Leader is a full-stack web application that allows users to vote on bird species in head-to-head matches and assigns ratings based on the [traditional ELO rating algorithim](https://en.wikipedia.org/wiki/Elo_rating_system). Deployed to Google Cloud Platform via a Github actions CI/CD platform.
+Wing Leader is a full-stack web application that allows users to vote on bird species in head-to-head matches and assigns ratings based on the [traditional ELO rating algorithim](https://en.wikipedia.org/wiki/Elo_rating_system). Deployed to Fly.io via a Github actions CI/CD.
 
 
 Features
@@ -17,14 +17,14 @@ Features
 -   **Database migrations via [goose](https://github.com/pressly/goose)**
 -   **Structured logging using [zerolog](https://github.com/rs/zerolog)**
 -   **Lightweight static template generation using [HTMX](https://github.com/bigskysoftware/htmx)**
--   **Serverless compute via [Google Cloud Run](https://cloud.google.com/run?hl=en)**
+-   **Compute and hosting via [Fly.io](https://fly.io)**
 -   **Session based vote tracking**
 -   **IP rate limiting**
 -   **Concurrent SQL safety**
 
 ## Motivation
 
-This project was built as a learning exercise to familiarize myself with Golang backends, PostgreSQL, and CI/CD using Github Actions. More importantly, this project answers an age old question empirically using the wisdom of the crowds - which is the best bird?
+This project was built as a learning exercise to familiarize myself with Golang backends, PostgreSQL, and CI/CD using Github Actions. More importantly, this project empirically answers an age old question using the wisdom of the crowds - which is the best bird?
 
 ## 🏗 Quick Start - Local installation 
 
@@ -135,32 +135,6 @@ go tool cover -html=coverage.out
 | Database queries | Top ratings ordering, match increment | Query correctness |
 | ELO calculations | Expected probability, delta | Algorithm correctness |
 
-## 📈 Observability
-
-### Metrics & Monitoring
-- **Cloud Run Metrics:**
-  - Request count and latency (p50, p95, p99)
-  - Container instance count and CPU/memory utilization
-  - Billable container time
-  - Cold start frequency
-
-- **Cloud SQL Metrics:**
-  - Connection count and connection errors
-  - Query execution time
-  - Database size and storage utilization
-  - Replication lag (if applicable)
-
-- **Cloudflare Analytics:**
-  - Global traffic distribution
-  - Cache hit ratio
-  - Threat detection and blocking
-  - DNS query volume
-
-### Logging
-- **Format:** Structured JSON (zerolog)
-- **Levels:** debug, info, warn, error
-- **Fields:** timestamp, level, message, request_id, user_ip, bird_ids
-
 ## 🛠️ Tech Stack
 
 ### Backend
@@ -176,10 +150,9 @@ go tool cover -html=coverage.out
 
 ### Infrastructure
 - **Edge Network:** Cloudflare (DNS, DDoS, CDN)
-- **Compute:** Google Cloud Run (serverless containers)
-- **Database:** Cloud SQL (PostgreSQL)
-- **Container Registry:** Google Artifact Registry
-- **Monitoring:** Cloud Run metrics, Cloud SQL metrics, structured logging
+- **Compute:** Fly.io Machines
+- **Database:** Fly.io managed postgres
+- **Container Registry:** Fly.io
 - **CI/CD:** GitHub Actions
 
 ### External APIs
